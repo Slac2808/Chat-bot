@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Chatbot ITPuebla</title>
+
+<style>
+
+/* ===== FONDO GENERAL ===== */
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0a1f44,#1e3c72);
+    height:100vh;
+    overflow:hidden;
+}
+
+/* ===== APP ===== */
+.app{
+    display:flex;
+    width:100%;
+    height:100%;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+    width:30%;
+    background:linear-gradient(180deg,#003366,#00509e);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    text-align:center;
+    padding:40px;
+}
+
+.mascota{
+    width:220px;
+    margin-bottom:20px;
+    animation:flotar 3s infinite ease-in-out;
+}
+
+@keyframes flotar{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+    100%{transform:translateY(0);}
+}
+
+.sidebar h1{
+    font-size:24px;
+    margin-bottom:10px;
+}
+
+.sidebar p{
+    opacity:0.8;
+    font-size:14px;
+}
+
+/* ===== CHAT ===== */
+.chat-container{
+    width:70%;
+    display:flex;
+    flex-direction:column;
+    background:#f4f6f9;
+    position:relative;
+}
+
+/* ===== HEADER ===== */
+.header{
+    background:white;
+    padding:18px;
+    border-bottom:1px solid #ddd;
+    font-weight:600;
+    font-size:16px;
+}
+
+/* ===== CHAT BOX ===== */
+.chat-box{
+    flex:1;
+    padding:25px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+}
+
+/* ===== MENSAJES ===== */
+.message{
+    margin-bottom:12px;
+    padding:12px 16px;
+    border-radius:16px;
+    max-width:65%;
+    white-space:pre-line;
+    line-height:1.5;
+    animation:fadeIn .3s ease;
+    font-size:14px;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.user{
+    background:#00509e;
+    color:white;
+    align-self:flex-end;
+}
+
+.bot{
+    background:#e4e8ee;
+    color:#333;
+    align-self:flex-start;
+}
+
+/* ===== BOTONES RÁPIDOS ===== */
+.quick-buttons{
+    padding:15px 20px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    background:#f4f6f9;
+    border-top:1px solid #eee;
+}
+
+.quick-buttons button{
+    border:none;
+    background:white;
+    padding:10px 15px;
+    border-radius:25px;
+    cursor:pointer;
+    font-size:13px;
+    transition:.2s;
+    box-shadow:0 3px 8px rgba(0,0,0,0.08);
+}
+
+.quick-buttons button:hover{
+    background:#00509e;
+    color:white;
+    transform:scale(1.05);
+}
+
+/* ===== INPUT ===== */
+.input-area{
+    display:flex;
+    padding:15px;
+    background:white;
+    border-top:1px solid #ddd;
+}
+
+.input-area input{
+    flex:1;
+    padding:12px 15px;
+    border-radius:25px;
+    border:1px solid #ddd;
+    outline:none;
+    font-size:14px;
+    background:#f9f9f9;
+}
+
+.input-area button{
+    margin-left:10px;
+    border:none;
+    padding:10px 22px;
+    border-radius:25px;
+    background:#00509e;
+    color:white;
+    cursor:pointer;
+    font-weight:500;
+    transition:.2s;
+}
+
+.input-area button:hover{
+    background:#003f7f;
+    transform:scale(1.05);
+}
+
+/* ===== BIENVENIDA ===== */
+.bienvenida{
+    position:absolute;
+    width:100%;
+    height:calc(100% - 80px);
+    top:0;
+    left:0;
+    background:rgba(244,246,249,0.96);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    transition:.4s;
+}
+
+.bienvenida.hidden{
+    opacity:0;
+    pointer-events:none;
+}
+
+.bienvenida-box{
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 15px 30px rgba(0,0,0,0.15);
+    max-width:420px;
+    text-align:center;
+}
+
+.bienvenida-box h2{
+    color:#003366;
+    margin-bottom:10px;
+}
+
+.bienvenida-box p{
+    color:#555;
+}
+
+/* ===== BOTONES DE BIENVENIDA ===== */
+.bienvenida-buttons{
+    margin-top:20px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+}
+
+.bienvenida-buttons button{
+    border:none;
+    background:#00509e;
+    color:white;
+    padding:10px 15px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:.2s;
+    font-size:13px;
+}
+
+.bienvenida-buttons button:hover{
+    transform:scale(1.05);
+    background:#003f7f;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar">
+
+        <img src="leon.png" class="mascota">
+
+        <h1>Asistente ITPuebla</h1>
+
+        <p>
+            Consulta información académica,
+            admisión, pagos y procesos escolares.
+        </p>
+
+    </div>
+
+    <!-- ===== CHAT ===== -->
+    <div class="chat-container">
+
+        <div class="header">
+            Instituto Tecnológico de Puebla
+        </div>
+
+        <!-- CHAT -->
+        <div id="chat" class="chat-box"></div>
+
+        <!-- BOTONES RÁPIDOS -->
+        <div class="quick-buttons">
+
+            <button onclick="preguntaRapida('fechas admision')">
+                📅 Fechas
+            </button>
+
+            <button onclick="preguntaRapida('costo ficha')">
+                💳 Pago
+            </button>
+
+            <button onclick="preguntaRapida('carreras disponibles')">
+                🎓 Carreras
+            </button>
+
+            <button onclick="preguntaRapida('evaluacion docente')">
+                🧠 Evaluación Docente
+            </button>
+
+            <button onclick="preguntaRapida('documentos inscripcion')">
+                📄 Documentos
+            </button>
+
+            <button onclick="preguntaRapida('ubicacion instituto')">
+                📍 Ubicación
+            </button>
+
+        </div>
+
+        <!-- INPUT -->
+        <div class="input-area">
+
+            <input
+                id="mensaje"
+                placeholder="Escribe tu pregunta..."
+                onkeypress="if(event.key==='Enter') enviar()"
+            >
+
+            <button onclick="enviar()">
+                Enviar
+            </button>
+
+        </div>
+
+        <!-- BIENVENIDA -->
+        <div id="bienvenida" class="bienvenida">
+
+            <div class="bienvenida-box">
+
+                <h2>Bienvenido</h2>
+
+                <p>
+                    Este asistente puede ayudarte con:
+                </p>
+
+                <p>
+                    <b>
+                        Admisión, pagos,
+                        reinscripción,
+                        carreras y más.
+                    </b>
+                </p>
+
+                <div class="bienvenida-buttons">
+
+                    <button onclick="preguntaRapida('fechas admision')">
+                        📅 Fechas
+                    </button>
+
+                    <button onclick="preguntaRapida('costo ficha')">
+                        💳 Costos
+                    </button>
+
+                    <button onclick="preguntaRapida('carreras disponibles')">
+                        🎓 Carreras
+                    </button>
+
+                    <button onclick="preguntaRapida('evaluacion Docente')">
+                        🧠 Examen
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* ===== ENVIAR ===== */
+async function enviar(){
+
+    const input = document.getElementById("mensaje");
+
+    const mensaje = input.value.trim();
+
+    if(mensaje === "") return;
+
+    // ocultar bienvenida
+    document.getElementById("bienvenida")
+    .classList.add("hidden");
+
+    agregarMensaje(mensaje,"user");
+
+    input.value = "";
+
+    const typing =
+    agregarMensaje("Escribiendo...","bot");
+
+    try{
+
+        const respuesta =
+        await fetch("http://localhost:3000/chat",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({mensaje})
+
+        });
+
+        const data = await respuesta.json();
+
+        typing.remove();
+
+        agregarMensaje(data.respuesta,"bot");
+
+    }catch(error){
+
+        typing.remove();
+
+        agregarMensaje(
+            "Error al conectar con el servidor.",
+            "bot"
+        );
+
+    }
+
+}
+
+/* ===== BOTONES RÁPIDOS ===== */
+function preguntaRapida(texto){
+
+    document.getElementById("mensaje").value = texto;
+
+    enviar();
+}
+
+/* ===== AGREGAR MENSAJES ===== */
+function agregarMensaje(texto,tipo){
+
+    const chat =
+    document.getElementById("chat");
+
+    const msg =
+    document.createElement("div");
+
+    msg.className =
+    "message " + tipo;
+
+    msg.textContent = texto;
+
+    chat.appendChild(msg);
+
+    chat.scrollTop =
+    chat.scrollHeight;
+
+    return msg;
+}
+
+</script>
+
+</body>
+</html>
