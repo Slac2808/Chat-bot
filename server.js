@@ -16,7 +16,12 @@ const upload = multer({ dest: "uploads/" });
 
 // ================= BASE DE CONOCIMIENTO =================
 let baseConocimiento = [];
+// ================= CARGA AUTOMÁTICA =================
+const rutaTXT = path.join(__dirname, "data", "base_conocimiento_chatbot.txt");
 
+if(fs.existsSync(rutaTXT)){
+    procesarTXT(rutaTXT);
+}
 // ================= PROCESAR TXT =================
 function procesarTXT(ruta) {
 
