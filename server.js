@@ -1,4 +1,5 @@
 // ================= IMPORTACIONES =================
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -8,6 +9,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
 // ================= MULTER =================
 const upload = multer({ dest: "uploads/" });
@@ -174,11 +176,6 @@ function hacerRespuestaHumana(texto) {
 }
 
 // ================= RUTA PRINCIPAL =================
-app.get("/", (req, res) => {
-
-    res.send("🚀 Backend del ChatBot funcionando");
-
-});
 
 // ================= CHAT =================
 app.post("/chat", (req, res) => {
